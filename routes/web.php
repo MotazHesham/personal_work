@@ -1,6 +1,8 @@
 <?php
 
-Route::redirect('/', '/login');
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
 Route::get('/home', function () {
     if (session('status')) {
         return redirect()->route('admin.home')->with('status', session('status'));
@@ -25,9 +27,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
     Route::resource('users', 'UsersController');
 
-    // Settings
-    Route::delete('settings/destroy', 'SettingsController@massDestroy')->name('settings.massDestroy');
-    Route::resource('settings', 'SettingsController');
+    // Settings 
+    Route::post('settings/media', 'SettingsController@storeMedia')->name('settings.storeMedia'); 
+    Route::post('settings/ckmedia', 'SettingsController@storeCKEditorImages')->name('settings.storeCKEditorImages');
+    Route::get('settings', 'SettingsController@index')->name('settings.index');
+    Route::post('settings/update', 'SettingsController@update')->name('settings.update');
 
     // Audit Logs
     Route::resource('audit-logs', 'AuditLogsController', ['except' => ['create', 'store', 'edit', 'update', 'destroy']]);
